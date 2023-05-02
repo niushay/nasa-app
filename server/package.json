@@ -7,7 +7,7 @@
     "test": "jest",
     "test-watch": "jest --watch",
     "start": "PORT=9000 node src/server.js",
-    "watch": "PORT=9000 nodemon src/server.js",
+    "watch": "PORT=9500 nodemon src/server.js",
     "cluster": "pm2 start src/server.js -i max"
   },
   "author": "",

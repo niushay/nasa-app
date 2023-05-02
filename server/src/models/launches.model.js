@@ -1,7 +1,9 @@
-// const launches = require('./launches.mongo')
-const launches = new Map();
+const launchesDatabase = require('./launches.mongo')
+const planets = require('./planets.mongo')
+// const launches = new Map();
 
-latestFlightNumber = 100;
+const DEFAULT_FLIGHT_NUMBER = 100;
+
 const launch = {
     flightNumber: 100,
     mission: 'Kepler Exploration X',
@@ -13,10 +15,25 @@ const launch = {
     success: true
 }
 
-launches.set(launch.flightNumber, launch);
+saveLaunch(launch);
 
-function getAllLaunches() {
-    return Array.from(launches.values());
+async function getAllLaunches() {
+    return await launchesDatabase.find({}, {
+        '_id': 0, '__v':0
+    });
+}
+
+async function saveLaunch(launch){
+    const planet = await planets.findOne({keplerName: launch.target})
+    if(!planet){
+        throw new Error('No matching planets found')
+    }
+
+    await launchesDatabase.updateOne({
+        flightNumber: launch.flightNumber
+    }, launch, {
+        upsert: true
+    })
 }
 
 function addNewLaunch(launch){
@@ -32,6 +49,18 @@ function addNewLaunch(launch){
 
 function existsLaunchById(launchId){
     return launches.has(launchId);
+}
+
+async function getLatestFlightNumber(){
+    const latestLaunch = await launchesDatabase
+    .findOne()
+    .sort('-flightNumber');
+
+    if(!latestLaunch){
+        return DEFAULT_FLIGHT_NUMBER;
+    }
+
+    return latestFlightNumber.flightNumber;
 }
 
 function abortLaunchById(launchId){
