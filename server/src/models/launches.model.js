@@ -6,23 +6,12 @@ const axios = require('axios');
 
 const DEFAULT_FLIGHT_NUMBER = 100;
 
-const launch = {
-    flightNumber: 100,
-    mission: 'Kepler Exploration X',
-    rocket: 'Explorer IS1',
-    launchDate: new Date('27 December, 2030'),
-    target: "Kepler-442 b",
-    customer: ['Niusha', 'NASA'],
-    upcoming: true,
-    success: true
-}
-
-saveLaunch(launch);
-
-async function getAllLaunches() {
-    return await launchesDatabase.find({}, {
-        '_id': 0, '__v':0
-    });
+async function getAllLaunches(skip, limit) {
+    return await launchesDatabase
+    .find({}, {'_id': 0, '__v':0})
+    .sort({ flightNumber:1 })
+    .skip(skip)
+    .limit(limit);
 }
 
 async function saveLaunch(launch){
@@ -140,7 +129,7 @@ async function loadLaunchData(){
     const firstLaunch = await findLaunch({
         flightNumber: 1,
         rocket: 'Falcon 1',
-        mission: 'FalconSet'
+        mission: 'FalconSat'
     })
 
     if(firstLaunch){

@@ -7,9 +7,18 @@ const api = require('./routes/api');
 
 const app = express();
 
-app.use(cors({
-    'origin': "http://localhost:3000"
-}));
+const whiteList = ['http://localhost:3000', 'http://localhost:9500'];
+const corsOptionsDelegate = function (req, callback) {
+    const origin = req.header('Origin');
+    let corsOptions;
+    if (whiteList.indexOf(origin) !== -1 || origin === undefined ) {
+      corsOptions = { origin: true }
+    } else {
+      corsOptions = { origin: false }
+    }
+    callback(null, corsOptions) // callback expects two parameters: error and options
+  }
+app.use(cors(corsOptionsDelegate));
 
 //Logging middleware
 app.use(morgan("combined"));
