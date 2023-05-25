@@ -16,14 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Use node.js version ${{matrix.node-version}}
         uses: actions/setup-node@v3
         with:
           node-version: ${{matrix.node-version}}
+
       - name: MongoDB in GitHub Actions
         uses: supercharge/mongodb-github-action@1.9.0
         with:
           node-version: ${{matrix.mongodb-version}}
+
       - run: npm install
       - run: npm run build --prefix client 
       - run: npm test
@@ -56,6 +59,6 @@ jobs:
       run: |
         echo "${{ secrets.PRIVATE_KEY }}" > key.pem
         chmod 400 key.pem
-        ssh -i key.pem ec2-user@ec2-user@ec2-3-128-189-60.us-east-2.compute.amazonaws.com "docker pull niushaa/nasa-project && docker run -d niushaa/nasa-project"
+        ssh -o "StrictHostKeyChecking yes" -i key.pem ec2-user@<ec2-instance-ip> "docker pull niushaa/nasa-project && docker run -d niushaa/nasa-project"
       env:
         PRIVATE_KEY: ${{ secrets.NASA_PRIVATE_KEY }}
