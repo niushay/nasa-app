@@ -62,3 +62,4 @@ jobs:
         ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i key.pem ec2-user@ec2-user@ec2-3-128-189-60.us-east-2.compute.amazonaws.com "docker pull niushaa/nasa-project && docker run -d niushaa/nasa-project"
       env:
         PRIVATE_KEY: ${{ secrets.NASA_PRIVATE_KEY }}
+        
