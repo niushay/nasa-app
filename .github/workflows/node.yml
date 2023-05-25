@@ -49,6 +49,9 @@ jobs:
         push: true
         tags: niushaa/nasa-project
 
+    - name: Login to Docker Hub
+      run: docker login -u <your-dockerhub-username> -p ${{ secrets.DOCKERHUB_TOKEN }}
+
     - name: Deploy to EC2
       run: |
         ssh -o "StrictHostKeyChecking no" -i /Users/niushayousefi/Documents/aws-key-pairs/nasa-project-key-pair.pem ec2-user@ec2-3-128-189-60.us-east-2.compute.amazonaws.com "docker pull niushaa/nasa-project && docker run -d niushaa/nasa-project"
